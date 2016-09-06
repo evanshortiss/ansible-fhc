@@ -3,9 +3,12 @@
   "version": "1.0.1",
   "description": "Ansible FHC Module",
   "main": "index.js",
-  "bin": "bin/ansible-fhc.js",
+  "bin": {
+    "ansible-fhc": "bin/ansible-fhc.js",
+  },
   "files": [
-    "lib"
+    "lib/",
+    "bin/"
   ],
   "scripts": {
     "test": "node_modules/.bin/mocha -w"

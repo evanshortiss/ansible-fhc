@@ -3,22 +3,31 @@
   "version": "1.0.1",
   "description": "Ansible FHC Module",
   "main": "index.js",
-  "files": ["lib"],
+  "bin": "bin/ansible-fhc.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "node_modules/.bin/mocha -w"
   },
   "author": "Philip Hayes",
   "license": "MIT",
   "dependencies": {
-    "fh-fhc": "~2.1.0"
+    "async": "~2.0.1",
+    "fh-fhc": "~2.1.0",
+    "verror": "~1.8.1",
+    "yargs": "~5.0.0"
   },
   "devDependencies": {
     "mocha": "~2.5.1",
     "should": "~0.0.1",
     "proxyquire": "~1.7.9"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/feedhenry-staff/ansible-fhc"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/feedhenry-staff/ansible-fhc"
+  },
+  "engines": {
+    "node": ">=0.10"
   }
 }

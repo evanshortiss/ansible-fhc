@@ -35,47 +35,12 @@ Create a file e.g. fhc.js and store in /library
 
 ```js
 #!/usr/local/bin/node
-fs = require('fs');
+
+'use strict';
+
 var ansiblefhc = require('ansible-fhc');
 
-// get arguments passed in by file
-ansiblefhc.init.getArgs(function(err, args){
-  var action;
-  if (err){
-    finish({err: err});
-  } else {
-    // load the fhc module.
-    ansiblefhc.init.fhLoad(function(err, success){
-      if (err ){
-        finish({err: err});
-      } else {
-        action = args.action;
-        // perform the action (first argument passed)
-        ansiblefhc.process(action, args, finish);
-      }
-    });
-  }
-});
-
-function finish(err, response ){
-  if (err){
-    console.log(err)
-  } else {
-    if (!response.changed){
-      response.changed = false;
-    }
-    try {
-      var stringOutput = JSON.stringify(response)
-      console.log(stringOutput);
-    }
-    catch(err){
-      console.log(err);
-    }
-  }
-
-  
-}
-
+ansiblefhc.execAnsibleLibrary();
 ```
 
 Create file e.g. roles/rhmap/tasks/main.yml
@@ -102,21 +67,21 @@ Create file e.g. roles/rhmap/tasks/main.yml
       openshiftPassword: "{{ openshift.password }}"
       routerDNSUrl: "{{ openshift.wildcard_dns }}"
       environment: "{{ item.name }}"
-    with_items: 
+    with_items:
       "{{ environments }}"
   - name: Create Environment
     fhc:
       action: createEnvironment
       engagementName: "{{ engagement_name }}"
       environment: "{{ item.name }}"
-    with_items: 
+    with_items:
       "{{ environments }}"
   - name: Create RH MAP Project
     fhc:
       action: createProject
-      projectName: "{{ item.name }}" 
+      projectName: "{{ item.name }}"
     register: project_details
-    with_items: 
+    with_items:
       "{{ projects }}"
   - name: Create teams
     fhc:
@@ -124,23 +89,23 @@ Create file e.g. roles/rhmap/tasks/main.yml
       engagementName: "{{ engagement_name }}"
       type: "{{ item.type }}"
       name: "{{ item.name }}"
-    with_items: 
+    with_items:
       "{{ teams }}"
   - name: Create RHMAP Users
     fhc:
       action: createUser
       username: "{{ item.username }}"
-      email: "{{ item.email }}" 
+      email: "{{ item.email }}"
     register: user_details
-    with_items: 
+    with_items:
       "{{ rhmap.users }}"
   - name: Add RHMAP Users to Teams
     fhc:
       action: addUserToTeam
       engagementName: "{{ engagement_name }}"
       username: "{{ item.username }}"
-      teamName: "{{ item.team }}" 
-    with_items: 
+      teamName: "{{ item.team }}"
+    with_items:
       "{{ rhmap.users }}"
   - name: Add Projects to Teams
     fhc:
@@ -148,7 +113,7 @@ Create file e.g. roles/rhmap/tasks/main.yml
       updateType: project
       engagementName: "{{ engagement_name }}"
       newValue: "{{ item[0].name }}"
-      teamName: "{{ item[1].name }}" 
+      teamName: "{{ item[1].name }}"
     with_nested:
       - "{{ projects }}"
       - "{{ teams }}"
@@ -158,7 +123,7 @@ Create file e.g. roles/rhmap/tasks/main.yml
       updateType: mbaas
       engagementName: "{{ engagement_name }}"
       newValue: "{{ item[0].name }}"
-      teamName: "{{ item[1].name }}" 
+      teamName: "{{ item[1].name }}"
       isLive: "{{ item[0].is_live }}"
       teamType: "{{ item[1].type }}"
     with_nested:
@@ -170,7 +135,7 @@ Create file e.g. roles/rhmap/tasks/main.yml
       updateType: environment
       engagementName: "{{ engagement_name }}"
       newValue: "{{ item[0].name }}"
-      teamName: "{{ item[1].name }}" 
+      teamName: "{{ item[1].name }}"
       isLive: "{{ item[0].is_live }}"
       teamType: "{{ item[1].type }}"
     with_nested:
